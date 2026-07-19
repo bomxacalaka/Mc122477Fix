@@ -5,6 +5,11 @@
 
 Fixes the extra `t` or `/` issue on some Linux desktop environments when opening the chat window.
 
+## NeoForge 26.2 port
+
+This branch ports the client-side fix to Minecraft 26.2 using NeoForge 26.2 and Java 25.
+Build it with `./gradlew build`; the distributable JAR is written to `build/libs`.
+
 ## Downloads
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mc122477fix)
 - [Modrinth](https://modrinth.com/mod/mc122477fix)
@@ -18,5 +23,5 @@ Thank you to `__null` on Mojira for their help in discovering the source of the 
 ### Fabric
 The Fabric version of the mod injects Mixin callbacks into `Keyboard#onKey` and `Keyboard#onChar` to listen for key press and char type events from [GLFW](https://github.com/glfw/GLFW). A Mixin is also injected into `MinecraftClient#tick` on 1.14 and `RenderSystem#flipFrame` on 1.15+ to listen for GLFW event polls. The mod then keeps track of how many polls have been processed since the game started in a poll counter. The mod stores this poll count separately when a key press event is detected for the chat open key or command key. The first char type event that is received within 5 polls after the poll of the original key press is then canceled, and the stored field is reset for the next time.  This fixes the bug because it stops the char type event from ever being able to be processed and is only executed when the chat is first opened.
 
-### Forge
-The Forge version of the mod uses built-in Forge events to listen for the opening of the chat screen and then stores the timestamp at which it was opened. If a char type event is detected within 50 milliseconds of the chat screen originally opening, the char type event is canceled. This has problems because slower hardware might have the char type event processed sometime after 50 milliseconds has already occurred since the opening of the chat. This rudimentary version is similar to how the original Fabric version worked until 1.1+. However, this method is still effective at catching most of the extra char type events from being processed.
+### Forge / NeoForge
+The Forge-family version uses built-in client events to detect the chat or creative inventory screen opening. Key and character events arriving during the first two rendered frames are canceled, preventing the delayed opening character from reaching the newly opened text field.
