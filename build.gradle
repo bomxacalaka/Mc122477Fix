@@ -9,7 +9,7 @@ version = mod_version
 group = mod_group_id
 
 base {
-    archivesName = mod_id
+    archivesName = 'linux-t-prefix-on-opening-chat'
 }
 
 // Minecraft 26.2 requires Java 25.

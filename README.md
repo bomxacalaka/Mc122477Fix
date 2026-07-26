@@ -1,9 +1,10 @@
-# MC-122477 Fix
-[![CurseForge](https://cf.way2muchnoise.eu/versions/432448.svg)](https://www.curseforge.com/minecraft/mc-mods/mc122477fix)
+# Linux T Prefix on Opening Chat
 ![GitHub License](https://img.shields.io/github/license/RecursiveG/Mc122477Fix)
 [![Mojira issue MC-122477](https://img.shields.io/jira/issue/MC-122477?baseUrl=https%3A%2F%2Fbugs.mojang.com)](https://bugs.mojang.com/browse/MC-122477)
 
 Fixes the extra `t` or `/` issue on some Linux desktop environments when opening the chat window.
+
+This is the NeoForge port of [RecursiveG's MC-122477 Fix](https://github.com/RecursiveG/Mc122477Fix). The original project and this port are licensed under the MIT License.
 
 ## NeoForge 26.2 port
 
@@ -11,9 +12,9 @@ This branch ports the client-side fix to Minecraft 26.2 using NeoForge 26.2 and 
 Build it with `./gradlew build`; the distributable JAR is written to `build/libs`.
 
 ## Downloads
-- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/mc122477fix)
-- [Modrinth](https://modrinth.com/mod/mc122477fix)
-- [GitHub releases](https://github.com/RecursiveG/Mc122477Fix/releases)
+- [NeoForge port releases](https://github.com/bomxacalaka/Mc122477Fix/releases)
+- [Original project on CurseForge](https://www.curseforge.com/minecraft/mc-mods/mc122477fix)
+- [Original project on Modrinth](https://modrinth.com/mod/mc122477fix)
 
 ## What is this bug?
 Thank you to `__null` on Mojira for their help in discovering the source of the bug. MC-122477 arises from an issue originating in GLFW (see [GLFW/glfw#1794](https://github.com/glfw/GLFW/issues/1794)). The Minecraft client polls for GLFW events twice per frame. A key press event is an event created when the player presses a key in the game. It is used to process game input like WASD. A char type event is also an event created when the player presses a key and is used to process text input. Key press events are always processed before char type events. In a normal environment, a key press and char type event would be polled at the same time. However, on some Linux desktop environments, the key press event and char type event are received on *separate* polls, allowing for the possibility of a game tick to occur between receiving the key press and char type events. Because of this possible extra game tick in between the two events, the key press event can be processed to open the chat on the game tick, and then the char type event is processed after the chat has already opened, causing an extra character to be typed. This doesn't happen on Windows, Mac OS, and the remaining Linux desktop environments because it is not possible for the chat to already be open when the char type event for opening chat (e.g. the character `t`) is processed.
