@@ -14,7 +14,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = 'linux-t-prefix-on-opening-chat'
 }
 
 // Minecraft 1.21.1 requires Java 21.
